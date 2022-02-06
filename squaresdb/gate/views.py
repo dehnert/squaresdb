@@ -15,10 +15,32 @@ from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 
 import squaresdb.gate.models as gate_models
+import squaresdb.gate.forms as gate_forms
 import squaresdb.membership.models as member_models
 
 # Create your views here.
 logger = logging.getLogger(__name__)
+
+
+def new_sub_period(request):
+    if request.method == 'POST':
+        form = gate_forms.NewPeriodForm(request.POST)
+        price_formset = gate_forms.new_period_prices_formset(request.POST)
+        if form.is_valid() and price_formset.is_valid():
+            # TODO: Do stuff
+            pass
+    else:
+        form = gate_forms.NewPeriodForm()
+        for field in form: print(field.field.__dict__)
+        price_formset = gate_forms.new_period_prices_formset(request.POST)
+
+    context = dict(
+        pagename='signin',
+        form=form,
+        price_formset=price_formset,
+    )
+    return render(request, 'gate/new_period.html', context)
+
 
 class DanceList(ListView): #pylint:disable=too-many-ancestors
     queryset = gate_models.Dance.objects.select_related('period')

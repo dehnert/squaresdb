@@ -20,6 +20,7 @@ class Admin_SubscriptionPeriod(VersionAdmin):
 @admin.register(gate_models.SubscriptionPeriodPrice)
 class Admin_SubscriptionPeriodPrice(VersionAdmin):
     list_display = ['period', 'fee_cat', 'low', 'high']
+    list_filter = ['period']
     ordering = ['period', 'low']
     # TODO: admin should create these inline with subscription period
 

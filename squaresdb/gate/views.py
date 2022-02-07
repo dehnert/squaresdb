@@ -47,6 +47,9 @@ def _make_sub_period(form, dance_dates, price_formset):
         dance.save()
     return new_period
 
+@permission_required(['gate.add_subscriptionperiod',
+                      'gate.add_subscriptionperiodprice',
+                      'gate.add_dance', ])
 def new_sub_period(request):
     dance_dates = None
     new_period = None

@@ -21,4 +21,23 @@
     {{ price_formset.management_form }}
 </form>
 
+<script>
+var name_changed = false;
+function update_name() {
+    console.log("running update_name");
+    if (name_changed) return;
+    var form = $(event.target)[0].form;
+    console.log(form.elements['start_date'].value);
+    var begin = Date.parse(form.elements['start_date'].value);
+    var end = Date.parse(form.elements['end_date'].value);
+    var mid = (begin+end)/2;
+    var year = new Date(mid).getFullYear();
+    var season = form.elements['season'].value;
+    var seasonCap = season[0].toUpperCase() + season.substring(1);
+    form.elements['name'].value = seasonCap + " " + year;
+    form.elements['slug'].value = year + "-" + season;
+}
+jQuery('#id_start_date, #id_end_date, #id_season').change(update_name);
+</script>
+
 {% endblock %}

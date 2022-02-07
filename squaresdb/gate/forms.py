@@ -17,37 +17,10 @@ class NewPeriodForm(forms.ModelForm):
     # So I think this is a overall form + SubscriptionPeriodPrice formset
     # https://docs.djangoproject.com/en/4.0/topics/forms/formsets/#using-more-than-one-formset-in-a-view
     seasons = ['fall', 'winter', 'spring', 'summer']
-    season = forms.ChoiceField(choices=zip(seasons, seasons))
+    season = forms.ChoiceField(choices=zip(seasons, seasons),
+                               help_text="Only used for default name+slug")
     price_qset = gate_models.DancePriceScheme.objects.all().order_by('-active', 'name')
     default_price_scheme = forms.ModelChoiceField(queryset=price_qset, empty_label=None)
-
-    def default_year(self):
-        if self.is_valid():
-            # As a side effect, populates cleaned_data
-            pass
-        print(f'{self.cleaned_data=}')
-        start = self.cleaned_data.get('start_date')
-        end = self.cleaned_data.get('end_date')
-        if start and end:
-            mid = start + ((end-start)/2)
-            return mid.year
-        return None
-
-    def __init__(self, data=None, *args, **kwargs):
-        super().__init__(data, *args, **kwargs)
-        print(f'{self.fields=}')
-        print(f'{self.fields["name"].__dict__=}')
-        if data:
-            #year = self.default_year() or "year"
-            year = (datetime.date.today() + datetime.timedelta(days=90)).year
-            season = data.get('season', 'season')
-            #self.fields['name'].initial = '%s %s' % (season.capitalize(), year)
-            self.initial['name'] = '%s %s' % (season.capitalize(), year)
-            self.fields['slug'].initial = '%s-%s' % (year, season.capitalize())
-        else:
-            del self.fields['name']
-            #self.fields['name'].widget = forms.HiddenInput()
-            self.fields['slug'].widget = forms.HiddenInput()
 
     class Meta:
         model = gate_models.SubscriptionPeriod
